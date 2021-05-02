@@ -3,13 +3,12 @@
  * includes React and other helpers. It's a great starting point while
  * building robust, powerful web applications using React + Laravel.
  */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ToDoList from './views/ToDoList';
 
 require('./bootstrap');
 
-/**
- * Next, we will create a fresh React component instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+window.$ = window.jQuery = require('jquery');
 
-require('./components/Example');
+ReactDOM.render(<ToDoList />, document.getElementById('root'));
