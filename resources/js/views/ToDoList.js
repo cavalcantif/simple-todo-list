@@ -1,39 +1,73 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { Row, Col, Card, CardHeader, CardBody, CardTitle, Button, Tooltip, Input, ListGroup, ListGroupItem, Alert } from 'reactstrap'
 import ToDoServiceProvider from '../service/ToDoServiceProvider';
+import ErrorHandlingHelper from '../helpers/errorHandlingHelper';
+import Task from '../components/Task';
+import { Row, Col, Card, CardHeader, CardBody, CardTitle, Button, Tooltip, Input, ListGroup, ListGroupItem, Alert } from 'reactstrap'
 
 function ToDoList (props) {
     // fields
     let service = ToDoServiceProvider.Service.getInstance();
 
     // state definitions
+    const [firstRender] = useState(true);
     const [newTask, setNewTask] = useState('');
+    const [tasksList, setTasksList] = useState([]);
 
     // controls refs
     const newTaskRef = useRef();
 
+    /**
+     * first render operations
+     */
+    useEffect(() => {
+        loadTasks();
+    }, [firstRender]);
+
     // methods
+    /**
+     * creates a new task object and calls the service insert method to store it in the database
+     */
     function addTask () {
         if (newTask) {
-            let inserting = service.insert({ description: newTask/*, is_done: false*/ });
+            let inserting = service.insert({ description: newTask, is_done: false });
 
             Promise.all([inserting]).then(function (response) {
                 toast.success(response[0]['message']);
                 setNewTask('');
+                loadTasks();
 
                 newTaskRef.current.focus();
             }, function (error) {
-                let errors = error.responseJSON['errors'];
-
-                if (errors.length) {
-                    errors.forEach(message => {
-                        toast.error(message);
-                    });
-                }
+                // handles the errors
+                ErrorHandlingHelper.handleAll(error.responseJSON);
             })
         }
     }
+
+    /**
+     * calls the service list method to load the tasks from the database
+     */
+    function loadTasks() {
+        let searching = service.list();
+
+        Promise.all([searching]).then(function (response) {
+            // populates the result data to a state variable
+            setTasksList(response[0]);
+        }, function (error) {
+            // handles the errors
+            ErrorHandlingHelper.handleAll(error.responseJSON);
+        })
+    }
+
+    /**
+     * returns one task component for each loaded task
+     */
+    const tasks = tasksList.map(function (task, index) {
+        return (
+            <Task key={index} task={task} />
+        )
+    });
 
     return (
         <>
@@ -74,7 +108,7 @@ function ToDoList (props) {
                                 <Col>
                                     <CardTitle tag={'h5'} className={'tasks-title'}>Tasks List</CardTitle>
                                     <ListGroup>
-
+                                        {tasks}
                                     </ListGroup>
                                 </Col>
                             </Row>
