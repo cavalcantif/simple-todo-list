@@ -61,18 +61,13 @@ ToDoServiceProvider.Service = (function () {
          * @param {object} task
          */
         this.insert = function (task) {
+
             return $.ajax({
                 url: '/api/tasks',
                 type: 'POST',
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
-                data: JSON.stringify(task),
-                success: function (response) {
-                    result.resolve(response);
-                },
-                error: function(error) {
-                    result.reject(error.responseJSON);
-                }
+                data: JSON.stringify(task)
             });
         }
 
@@ -86,13 +81,7 @@ ToDoServiceProvider.Service = (function () {
                 type: 'PUT',
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
-                data: JSON.stringify(task),
-                success: function (response) {
-                    result.resolve(response);
-                },
-                error: function(error) {
-                    result.reject(error.responseJSON);
-                }
+                data: JSON.stringify(task)
             });
         }
 
@@ -106,13 +95,7 @@ ToDoServiceProvider.Service = (function () {
                 type: 'DELETE',
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
-                data: JSON.stringify(task),
-                success: function (response) {
-                    result.resolve(response);
-                },
-                error: function(error) {
-                    result.reject(error.responseJSON);
-                }
+                data: JSON.stringify(task)
             });
         }
     }
