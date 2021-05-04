@@ -3,14 +3,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import ToDoServiceProvider from '../service/ToDoServiceProvider';
 import ErrorHandlingHelper from '../helpers/errorHandlingHelper';
 import Task from '../components/Task';
-import { Row, Col, Card, CardHeader, CardBody, CardTitle, Button, Tooltip, Input, ListGroup, ListGroupItem, Alert } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, CardTitle, Button, Tooltip, Input, ListGroup, } from 'reactstrap'
 
+/**
+ * main page component
+ */
 function ToDoList (props) {
     // fields
     let service = ToDoServiceProvider.Service.getInstance();
 
     // state definitions
     const [firstRender] = useState(true);
+    const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
     const [newTask, setNewTask] = useState('');
     const [tasksList, setTasksList] = useState([]);
 
@@ -21,6 +25,7 @@ function ToDoList (props) {
      * first render operations
      */
     useEffect(() => {
+        // loads the task list
         loadTasks();
     }, [firstRender]);
 
@@ -33,15 +38,20 @@ function ToDoList (props) {
             let inserting = service.insert({ description: newTask, is_done: false });
 
             Promise.all([inserting]).then(function (response) {
+                // shows success message
                 toast.success(response[0]['message']);
+
+                // clears state variable
                 setNewTask('');
+
+                // reloads the tasks list
                 loadTasks();
 
                 newTaskRef.current.focus();
             }, function (error) {
                 // handles the errors
                 ErrorHandlingHelper.handleAll(error.responseJSON);
-            })
+            });
         }
     }
 
@@ -49,6 +59,7 @@ function ToDoList (props) {
      * calls the service list method to load the tasks from the database
      */
     function loadTasks() {
+        // calls the service list method
         let searching = service.list();
 
         Promise.all([searching]).then(function (response) {
@@ -57,7 +68,28 @@ function ToDoList (props) {
         }, function (error) {
             // handles the errors
             ErrorHandlingHelper.handleAll(error.responseJSON);
-        })
+        });
+    }
+
+    /**
+     * calls the service update method to update the task in the database
+     * and reloads the task list
+     * @param {object} task
+     */
+    function updateTask (task) {
+        // calls the service update method
+        let updating = service.update(task);
+
+        Promise.all([updating]).then(function (response) {
+            // shows success message
+            toast.success(response[0]['message']);
+
+            // reloads the tasks list
+            loadTasks();
+        }, function (error) {
+            // handles the errors
+            ErrorHandlingHelper.handleAll(error.responseJSON);
+        });
     }
 
     /**
@@ -65,7 +97,7 @@ function ToDoList (props) {
      */
     const tasks = tasksList.map(function (task, index) {
         return (
-            <Task key={index} task={task} />
+            <Task key={index} task={task} onCompletionChange={updateTask} />
         )
     });
 
@@ -99,7 +131,9 @@ function ToDoList (props) {
                                         <i className={'fas fa-plus'}></i>
                                     </Button>
                                     <Tooltip placement={'auto'}
-                                        target={'buttonAdd'}>
+                                        target={'buttonAdd'}
+                                        isOpen={tooltipIsOpen}
+                                        toggle={() => setTooltipIsOpen(!tooltipIsOpen)}>
                                         Add the Task
                                     </Tooltip>
                                 </Col>

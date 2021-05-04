@@ -77,7 +77,7 @@ ToDoServiceProvider.Service = (function () {
          */
         this.update = function (task) {
             return $.ajax({
-                url: '/api/tasks/' + id,
+                url: '/api/tasks/' + task.id,
                 type: 'PUT',
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
