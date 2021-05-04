@@ -1,62 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# **ToDo List**
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## **Application Dependencies**
+### **Dependencies**
+- @fortawesome/fontawesome-free: 5.15.2
+- bootstrap: ^4.6.0
+- jquery: ^3.6
+- popper.js: 1.16.1
+- react: ^17.0.2
+- react-dom: ^17.0.2
+- reactstrap: ^8.9.0
+- react-toastify: 7.0.4
 
-## About Laravel
+### **Dev Dependencies**
+- @babel/preset-react: ^7.13.13
+- axios: ^0.21
+- laravel-mix: ^6.0.6
+- lodash: ^4.17.19
+- postcss: ^8.1.14
+- resolve-url-loader: ^3.1.2
+- sass: ^1.32.11
+- sass-loader: ^11.0.1
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## **Installation**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### **Server Requirements**
+- Apache2
+- MySQL >= 8.0
+- PHP >= 7.3
+- BCMath PHP Extension
+- Ctype PHP Extension
+- Fileinfo PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+- Composer >= 2.0
+- NPM >= 7.4
+- GIT >= 2.2
 
-## Learning Laravel
+<br>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### **Application Server Configuration (Apache 2)**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### **Step One - Directory Structure**
 
-## Laravel Sponsors
+- sudo mkdir -p /var/www/html/todo-list
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+> The */todo-list/* represents the domain name we want to serve from our VPS.
 
-### Premium Partners
+<br>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+#### **Step Two - Ownership and Permissions**
 
-## Contributing
+- sudo chown -R \$USER:\$USER /var/www/html/todo-list
+- sudo chmod -R 755 /var/www/html/
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<br>
 
-## Code of Conduct
+#### **Step Three - Virtual Host Configuration**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/todo-list.conf
+- sudo nano /etc/apache2/sites-available/todo-list.conf
 
-## Security Vulnerabilities
+The file will look something like this:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> \<VirtualHost *:80>
+> 
+>     DocumentRoot /var/www/html/todo-list/public
+>     ServerName todo-list
+> 
+>     <Directory /var/www/html/todo-list/public>
+>         AllowOverride All
+>         Order allow,deny
+>         Allow from all
+>     </Directory>
+> 
+> \</VirtualHost>
 
-## License
+<br/>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- sudo a2ensite /etc/apache2/sites-available/todo-list.conf
+- sudo a2enmod rewrite
+- sudo service apache2 restart
+- sudo nano /etc/hosts
+
+Add the following line:
+> 127.0.1.1 todo-list
+
+<br/>
+
+### **Application Deploy and Configuration**
+
+- Create a MySQL database for the application
+- Create a databse user for the application
+- Download the application from the GIT repository to the var/www/html/todo-list directory
+- Change the file var/www/html/todo-list/config/app.php to reflect the application basic information, such as name, url
+- Change the file var/www/html/todo-list/config/database.php to reflect your database access information
+- Set the permissions on the storage and cache directories as following:
+
+> sudo chmod -R 777 /var/www/html/todo-list/storage
+> 
+> sudo chmod -R 777 /var/www/html/todo-list/bootstrap/cache
+
+- Install the application dependencies running the folowing command in the /var/www/html/todo-list directory:
+
+> npm install
+
+- Compile the application, runing the following command in the /var/www/html/todo-list directory:
+
+> npm run prod (or npm run dev, depending on the enviroment you want to run the application)
+
+- Create the database tables running the following command in /var/www/html/todo-list directory:
+
+> php artisan migrate
+
+- Pupulate the database tables with initial data running the following command in /var/www/html/todo-list directory:
+
+> php artisan db:seed
+
+<br />
+
+## **Relevant Folders Structure Information**
+
+### **Frontend Folders Structure**
+- *resources/js/components*: contains javascript reactJs components used by pages components
+- *resources/js/helpers*: contains javascript class helpers
+- *resources/js/services*: contains javascrit services classes wich provide connections to api endpoints for each application functionality
+- *resources/js/views*: contains react components for the functionalities pages
+- *resources/css*: contains custom css files
+
+> **Basic Frontend Flow**
+> 
+> ViewComponent <--> JavaScriptService <--> BackendApiEndpoints
